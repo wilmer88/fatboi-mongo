@@ -15,7 +15,7 @@ app.use(express.json());
 
 app.use(express.static("public"));
 //connecting with mongoose connection code
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/vatoslocos", { useNewUrlParser: true }, { useUnifiedTopology: true }, { useCreateIndex: true}, { useFindModify: false});
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true }, { useUnifiedTopology: true });
 const connection = mongoose.connection
 connection.on("connected", () => {
     console.log("your connected with mongoose boiii")
@@ -31,30 +31,30 @@ connection.on("error",(err) => {
 //     console.log(message);
 //   });
 
-app.get("/config", (req, res) => {
+app.get("/", (req, res) => {
   //db.War.find({})
     //.then(dbWar => {
-      res.json({success: true});
+      res.sendFile(path.join(_dirname + "./public/index.html"));
+      //res.json({success: true});
     // })
     // .catch(err => {
     //   res.json(err);
     // });
 });
 
-app.get("/api/exersise", (req, res) => {
-  db.Workout.find({})
-    .then((foundworkout) => {
-      res.json(foundworkout);
-    })
-    .catch(err => {
-      res.json(err);
-    });
-});
+// app.get("/exercise", (req, res) => {
+//   res.sendFile(path.join(_dirname + "./public/exercise.html"));
+//    db.Exersise.find({}, (error, data) => {
+//      if (error){
+//        res.send(error);
+//      } else{
+//        res.send(data)
+//      }
+//    });
+//  });
 
- app.post("/api/exersise", (req, res) => {
-   db.Exersise.create(req.body).then((newejer) => {
-       res.json(newejer);
-   })
+//  app.post("/ecercise", ({ body }, res) => {
+//   db.Mor.create(body)
 //     .then(({ _id }) => db.MOR.findOneAndUpdate({}, { $push: { notes: _id } }, { new: true }))
 //     .then(dbmor => {
 //       res.json(dbmor);
@@ -62,17 +62,16 @@ app.get("/api/exersise", (req, res) => {
 //     .catch(err => {
 //       res.json(err);
 //     });
- });
-
-// app.get("/populateduser", (req, res) => {
-//   db.User.find({}).populate("notes").then(dbUser => {
-//     res.json(dbUser);
-//   }).catch(err => {
-//     res.json(err);
-
-//   })
-  
 // });
+
+app.get("/exercise", (req, res) => {
+  db.Workout.find({}).populate("exercise").then(dbUser => {
+    res.json(dbUser);
+  }).catch(err => {
+    res.json(err);
+ })
+ 
+ });
 // app.put("api/workout/:id", (req, res) => {
 //     db.Workout.findByIdAndUpdate(req.params.id, req.body, { new: true }).then(
 //         (updatedWorkouts) =>{
