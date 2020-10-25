@@ -33,14 +33,8 @@ app.get("/stats", (req, res) =>{
 });
 
 app.get("/exercise", (req, res) => {
-  db.Workout.find({}).populate("exercisee").then(dbUser => {
-    res.json(dbUser);
-  }).catch(err => {
-    res.json(err);
- })
- 
- });
-
+  res.sendFile(path.join(__dirname + "./public/index.html"));
+});
 
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
