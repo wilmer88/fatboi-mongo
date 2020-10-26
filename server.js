@@ -41,11 +41,11 @@ app.get("/api/workouts/range", (req, res) => {
     res.json(lastWorkout);
   }).catch(err => {
     console.log(err);
-    res.json({
-      error= true,
-      data:null,
-      message: "fail to get workout range"
-    })
+    // res.json({
+    //   error= true,
+    //   data:null,
+    //   message: "fail to get workout range"
+    // })
   })
 });
 
