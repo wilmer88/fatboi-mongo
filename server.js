@@ -36,6 +36,19 @@ app.get("/exercise", (req, res) => {
   res.sendFile(path.join(__dirname + "./public/index.html"));
 });
 
+app.get("/api/workouts/range", (req, res) => {
+  db.Workout.find({}).limit(7).then((lastWorkout) => {
+    res.json(lastWorkout);
+  }).catch(err => {
+    console.log(err);
+    res.json({
+      error= true,
+      data:null,
+      message: "fail to get workout range"
+    })
+  })
+});
+
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
 });
