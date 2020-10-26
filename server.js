@@ -29,11 +29,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/stats", (req, res) =>{
-  res.sendFile(path.join(__dirname + "./public/index.html"));
+  res.sendFile(path.join(__dirname + "./public/stats.html"));
 });
 
 app.get("/exercise", (req, res) => {
-  res.sendFile(path.join(__dirname + "./public/index.html"));
+  res.sendFile(path.join(__dirname + "./public/exercise.html"));
 });
 
 app.get("/api/workouts/range", (req, res) => {
@@ -49,6 +49,31 @@ app.get("/api/workouts/range", (req, res) => {
   })
 });
 
+app.post("/api/workouts", (req, res) => {
+  console.log(req.body);
+  db.Workout.create({})
+    .then((dbWorkout) => {
+      res.json(dbWorkout);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+app.put("/api/workouts/:id", (req, res) => {
+  
+  db.Workout.findOneAndUpdate(req.params.id, req.body, {new:true})
+.then((dbUpdate) => {
+      res.send(dbUpdate);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.json({
+        error: true,
+        date: null,
+        message: "faild to update"
+      })
+    });
+});
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}!`);
 });
