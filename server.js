@@ -1,79 +1,56 @@
+
 const express = require("express");
-const logger = require("morgan");
 const mongoose = require("mongoose");
+const app = express();
+const path = require("path");
+const workoutController = require("./routes/workoutController");
+const views = require("./routes/views");
+
 
 const PORT = process.env.PORT || 3000;
 
-const db = require("./models");
-
-const app = express();
-
-app.use(logger("dev"));
-
+// express middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// middleware for running public folder
 app.use(express.static("public"));
-//connecting with mongoose connection code
-mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { useNewUrlParser: true }, { useUnifiedTopology: true });
-const connection = mongoose.connection
+
+// mongoose middleware
+mongoose.connect(
+  process.env.MONGODB_URI || "mongodb://localhost/workout",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+  }
+);
+
+// mongoose connected successfully 
+const connection = mongoose.connection;
 connection.on("connected", () => {
-    console.log("your connected with mongoose boiii")
-});
-connection.on("error",(err) => {
-    console.log("somthings wrong trying to connect to mongoose y pues:", err)
+  console.log("Mongoose successfully connected.");
 });
 
-app.get("/", (req, res) => {
- res.sendFile(path.join(_dirname + "./public/index.html"));
+// Logs if there is an error on connection
+connection.on("error", (err) => {
+  console.log("Mongoose connection error: ", err);
 });
 
-app.get("/stats", (req, res) =>{
-  res.sendFile(path.join(__dirname + "./public/stats.html"));
+app.get("/api/config", (req, res) => {
+  res.json({
+    success: true,
+  });
 });
 
-app.get("/exercise", (req, res) => {
-  res.sendFile(path.join(__dirname + "./public/exercise.html"));
-});
 
-app.get("/api/workouts/range", (req, res) => {
-  db.Workout.find({}).limit(7).then((lastWorkout) => {
-    res.json(lastWorkout);
-  }).catch(err => {
-    console.log(err);
-    // res.json({
-    //   error= true,
-    //   data:null,
-    //   message: "fail to get workout range"
-    // })
-  })
-});
 
-app.post("/api/workouts", (req, res) => {
-  console.log(req.body);
-  db.Workout.create({})
-    .then((dbWorkout) => {
-      res.json(dbWorkout);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-app.put("/api/workouts/:id", (req, res) => {
-  
-  db.Workout.findOneAndUpdate(req.params.id, req.body, {new:true})
-.then((dbUpdate) => {
-      res.send(dbUpdate);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.json({
-        error: true,
-        date: null,
-        message: "faild to update"
-      })
-    });
-});
+
+app.use(workoutController);
+app.use(views);
+
+
 app.listen(PORT, () => {
-  console.log(`App running on port ${PORT}!`);
+  console.log(`App is running on http://localhost:${PORT}`)
 });
