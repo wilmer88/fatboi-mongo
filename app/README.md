@@ -2,8 +2,8 @@
 # Unit 17 Nosql Homework: Workout Tracker
 given by BCS coding bootcamp.
 
- Fitness tracker app where the user can keep track of  exersises done with a graph past exersises.
- The bugs in this app are the routs are not working correctly.
+ Fitness tracker app where the user can keep track of the exersises completed, allows users to add exersises,  and see their data shown via chart.
+ 
 
 
 
